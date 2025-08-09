@@ -1,0 +1,25 @@
+{
+  "name": "faceit-auth-vanilla",
+  "version": "1.0.0",
+  "description": "Vanilla HTML/CSS/JS FACEIT OAuth2 integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "express-session": "^1.18.0",
+    "faceit-visa": "^1.1.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  },
+  "keywords": [
+    "faceit",
+    "oauth2",
+    "vanilla",
+    "authentication"
+  ]
+}

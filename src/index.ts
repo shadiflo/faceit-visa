@@ -12,10 +12,12 @@ export interface FaceitVisaConfig {
 
 export interface FaceitUser {
   user_id: string;
+  player_id: string;
   nickname: string;
   email?: string;
-  avatar?: string;
-  country?: string;
+  avatar: string;
+  country: string;
+  level?: number;
   [key: string]: any;
 }
 

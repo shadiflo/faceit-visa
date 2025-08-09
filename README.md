@@ -1,210 +1,282 @@
-# FaceitVisa 
+# FaceitVisa
 
 <img src="faceit.png" alt="FACEIT" width="64" height="64">
 
-A lightweight, TypeScript-first OAuth2 authentication library for FACEIT integration. Inspired by the simplicity of getting a visa - just the essentials you need to authenticate with FACEIT.
+**The easiest way to add FACEIT OAuth2 authentication to any web application.**
 
-## Features
+Inspired by the simplicity of getting a visa - just the essentials you need to authenticate with FACEIT.
 
-- 🚀 **Easy Setup** - Get started in minutes
-- 🔒 **Secure** - Uses PKCE (Proof Key for Code Exchange) flow
-- 🎯 **TypeScript First** - Full type safety out of the box
-- 🔌 **Express Integration** - Ready-to-use middleware
-- 🌐 **Framework Agnostic** - Core library works with any Node.js framework
-- 📦 **Lightweight** - Minimal dependencies
+[![npm version](https://badge.fury.io/js/faceit-visa.svg)](https://www.npmjs.com/package/faceit-visa)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Installation
+## ✨ Features
+
+- 🚀 **One-Command Setup** - Auto-generates complete integration
+- 🔒 **Secure by Default** - PKCE OAuth2 flow with security best practices
+- 🌐 **Works Everywhere** - Next.js, PHP, Vanilla HTML/CSS/JS
+- 🤖 **Smart Detection** - Automatically detects your project type
+- 🎯 **TypeScript Ready** - Full type safety included
+- 📦 **Zero Config** - Just add your FACEIT credentials
+
+## 🚀 Quick Start
+
+### Auto-Setup (Recommended)
 
 ```bash
 npm install faceit-visa
-# or
-yarn add faceit-visa
-# or
-pnpm add faceit-visa
 ```
 
-## Quick Start
+That's it! We'll detect your project type and generate everything you need.
 
-### 1. Basic Usage
+### Manual Setup
 
-```typescript
-import { FaceitVisa } from 'faceit-visa';
+Choose your framework:
 
-const visa = new FaceitVisa({
-  clientId: 'your-faceit-client-id',
-  clientSecret: 'your-faceit-client-secret',
-  redirectUri: 'http://localhost:3000/auth/callback'
-});
+```bash
+# Next.js App Router (TypeScript + HTTPS)
+npx faceit-visa generate nextjs-app-router
 
-// Generate auth URL
-const { url, codeVerifier } = visa.getAuthUrl();
-console.log('Visit:', url);
+# Vanilla HTML/CSS/JS (Universal)
+npx faceit-visa generate vanilla
 
-// After user authorizes, exchange code for token
-const tokenResponse = await visa.exchangeCode(code, codeVerifier);
-const user = await visa.getUserProfile(tokenResponse.access_token);
+# Pure PHP (Zero dependencies)
+npx faceit-visa generate php
 ```
 
-### 2. Express.js Integration
+## 📋 What Gets Generated
 
-```typescript
-import express from 'express';
-import session from 'express-session';
-import { FaceitVisa, FaceitVisaMiddleware } from 'faceit-visa';
+### Next.js App Router
+```
+src/app/api/auth/
+├── faceit/route.ts           # OAuth initiation
+├── callback/faceit/route.ts  # OAuth callback
+├── user/route.ts            # Get current user
+└── logout/route.ts          # Logout endpoint
 
-const app = express();
+src/components/
+└── Navbar.tsx               # Ready-to-use auth navbar
 
-// Setup session
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: false
-}));
-
-// Initialize FaceitVisa
-const visa = new FaceitVisa({
-  clientId: process.env.FACEIT_CLIENT_ID,
-  clientSecret: process.env.FACEIT_CLIENT_SECRET,
-  redirectUri: 'http://localhost:3000/auth/faceit/callback'
-});
-
-// Setup middleware
-const authMiddleware = new FaceitVisaMiddleware(visa);
-
-// Mount auth routes
-app.use('/auth', authMiddleware.getRoutes());
-
-// Protected route
-app.get('/profile', authMiddleware.requireAuth(), (req, res) => {
-  res.json({ user: req.user });
-});
+.env.example                 # Environment template
 ```
 
-### 3. Next.js App Router
-
-```typescript
-// app/auth/faceit/route.ts
-import { FaceitVisa } from 'faceit-visa';
-
-const visa = new FaceitVisa({
-  clientId: process.env.FACEIT_CLIENT_ID!,
-  clientSecret: process.env.FACEIT_CLIENT_SECRET!,
-  redirectUri: `${process.env.NEXTAUTH_URL}/auth/faceit/callback`
-});
-
-export async function GET() {
-  const { url } = visa.getAuthUrl();
-  return Response.redirect(url);
-}
+### Vanilla HTML/CSS/JS
+```
+├── index.html              # Main page with auth
+├── faceit-auth.js          # Authentication logic
+├── server.js               # Express.js backend
+├── styles.css              # Responsive styling
+├── package.json            # Dependencies
+└── .env.example            # Environment template
 ```
 
-## API Reference
-
-### FaceitVisa
-
-#### Constructor
-
-```typescript
-new FaceitVisa(config: FaceitVisaConfig)
+### PHP
+```
+├── index.php               # Homepage
+├── login.php               # OAuth initiation
+├── callback.php            # OAuth callback
+├── logout.php              # Logout
+├── profile.php             # User profile page
+├── FaceitAuth.php          # OAuth class
+├── config.php              # Configuration
+├── styles.css              # Styling
+└── .env.example            # Environment template
 ```
 
-**FaceitVisaConfig:**
-- `clientId`: Your FACEIT application client ID
-- `clientSecret`: Your FACEIT application client secret  
-- `redirectUri`: Your application's callback URL
-- `apiEnv?`: FACEIT API environment (defaults to production)
-- `accountEnv?`: FACEIT accounts environment (defaults to production)
+## 🎯 Examples
 
-#### Methods
+### Next.js Integration
 
-**`getAuthUrl(sessionId?: string)`**
-- Generates authorization URL for OAuth2 flow
-- Returns: `{ url: string, codeVerifier: string }`
+After running `npx faceit-visa generate nextjs-app-router`:
 
-**`exchangeCode(code: string, codeVerifier: string)`**  
-- Exchanges authorization code for access token
-- Returns: `Promise<TokenResponse | null>`
-
-**`getUserProfile(accessToken: string)`**
-- Fetches user profile using access token
-- Returns: `Promise<FaceitUser | null>`
-
-### FaceitVisaMiddleware
-
-Express.js middleware for easy integration.
-
-#### Constructor
-
-```typescript
-new FaceitVisaMiddleware(visa: FaceitVisa, options?: MiddlewareOptions)
-```
-
-**MiddlewareOptions:**
-- `loginPath?`: Login route path (default: `/auth/faceit`)
-- `callbackPath?`: Callback route path (default: `/auth/faceit/callback`)
-- `onSuccess?`: Success callback function
-- `onError?`: Error callback function
-
-#### Methods
-
-**`getRoutes()`**
-- Returns Express router with login and callback routes
-
-**`requireAuth()`**  
-- Middleware that requires authentication
-- Redirects unauthenticated users
-
-**`optionalAuth()`**
-- Middleware that optionally adds user to request
-- Continues regardless of authentication status
-
-**`logout()`**
-- Middleware that clears user session
-
-## Environment Variables
-
-Create a `.env` file in your project root:
-
+**1. Add credentials to `.env.local`:**
 ```env
 FACEIT_CLIENT_ID=your_client_id_here
 FACEIT_CLIENT_SECRET=your_client_secret_here
+NEXTAUTH_URL=https://localhost:3000
 ```
 
-## Getting FACEIT Credentials
+**2. Use the generated navbar:**
+```tsx
+// app/layout.tsx
+import Navbar from '@/components/Navbar'
+
+export default function Layout({ children }) {
+  return (
+    <html>
+      <body>
+        <Navbar />
+        {children}
+      </body>
+    </html>
+  )
+}
+```
+
+**3. Start with HTTPS:**
+```bash
+npm run dev -- --experimental-https
+```
+
+**4. Set FACEIT redirect URI:**
+```
+https://localhost:3000/api/auth/callback/faceit
+```
+
+### PHP Integration
+
+After running `npx faceit-visa generate php`:
+
+**1. Add credentials to `.env`:**
+```env
+FACEIT_CLIENT_ID=your_client_id_here
+FACEIT_CLIENT_SECRET=your_client_secret_here
+BASE_URL=http://localhost:8000
+```
+
+**2. Start PHP server:**
+```bash
+php -S localhost:8000
+```
+
+**3. Set FACEIT redirect URI:**
+```
+http://localhost:8000/callback.php
+```
+
+### Vanilla HTML/JS Integration
+
+After running `npx faceit-visa generate vanilla`:
+
+**1. Install dependencies:**
+```bash
+npm install
+```
+
+**2. Add credentials to `.env`:**
+```env
+FACEIT_CLIENT_ID=your_client_id_here
+FACEIT_CLIENT_SECRET=your_client_secret_here
+BASE_URL=http://localhost:3000
+```
+
+**3. Start server:**
+```bash
+npm start
+```
+
+## 🔧 Manual Usage (Advanced)
+
+For custom implementations:
+
+```typescript
+import { FaceitVisa } from 'faceit-visa'
+
+const visa = new FaceitVisa({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  redirectUri: 'https://yourapp.com/callback'
+})
+
+// Generate auth URL
+const { url, codeVerifier } = visa.getAuthUrl()
+
+// Exchange code for token
+const token = await visa.exchangeCode(code, codeVerifier)
+
+// Get user profile
+const user = await visa.getUserProfile(token.access_token)
+```
+
+## 🎮 FACEIT Setup
 
 1. Go to [FACEIT Developer Portal](https://developers.faceit.com/)
 2. Create a new application
-3. Set your redirect URI (e.g., `http://localhost:3000/auth/faceit/callback`)
-4. Copy your Client ID and Client Secret
+3. Set your redirect URI based on your template:
+   - Next.js: `https://localhost:3000/api/auth/callback/faceit`
+   - PHP: `http://localhost:8000/callback.php`
+   - Vanilla: `http://localhost:3000/api/auth/callback/faceit`
+4. Copy Client ID and Client Secret to your `.env` file
 
-## Examples
+## 🛠️ CLI Commands
 
-Check out the `/examples` directory for complete implementations:
+```bash
+# Generate templates
+npx faceit-visa generate nextjs-app-router
+npx faceit-visa generate vanilla
+npx faceit-visa generate php
 
-- **Express.js**: Basic Express server with session management
-- **Next.js App Router**: Modern Next.js integration
+# List available templates
+npx faceit-visa list
 
-## TypeScript Support
-
-FaceitVisa is built with TypeScript and provides full type definitions:
-
-```typescript
-import type { FaceitUser, TokenResponse, FaceitVisaConfig } from 'faceit-visa';
+# Get help
+npx faceit-visa help
 ```
 
-## Contributing
+## 🔒 Security Features
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+- **PKCE Flow**: Proof Key for Code Exchange for maximum security
+- **State Parameter**: CSRF protection during OAuth flow
+- **Secure Cookies**: httpOnly, secure, SameSite settings
+- **Input Sanitization**: All user inputs properly validated
+- **Token Storage**: Secure server-side session management
 
-## License
+## 🌟 User Flow
+
+1. **Click "Login with FACEIT"** → Redirect to FACEIT OAuth
+2. **User authorizes** → FACEIT redirects back with code
+3. **Exchange code for token** → Get access token securely
+4. **Fetch user profile** → Display user info and gaming stats
+5. **Session management** → Maintain login state
+
+## 📚 API Reference
+
+### FaceitVisa Class
+
+```typescript
+interface FaceitUser {
+  user_id: string
+  player_id: string
+  nickname: string
+  avatar: string
+  country: string
+  level?: number
+}
+
+class FaceitVisa {
+  getAuthUrl(): { url: string, codeVerifier: string }
+  exchangeCode(code: string, codeVerifier: string): Promise<TokenResponse>
+  getUserProfile(accessToken: string): Promise<FaceitUser>
+}
+```
+
+## 🚨 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| `404 on callback` | Check redirect URI matches exactly |
+| `HTTPS required` | Use `--experimental-https` for Next.js dev |
+| `Missing credentials` | Verify `.env` file has correct values |
+| `CORS errors` | Ensure same origin for frontend/backend |
+
+## 📦 Requirements
+
+- **Next.js**: Node.js 18+, Next.js 13+
+- **PHP**: PHP 7.4+, cURL extension
+- **Vanilla**: Node.js 16+, Express.js
+
+## 🤝 Contributing
+
+Contributions welcome! Please check the [issues page](https://github.com/shadiflo/faceit-visa/issues).
+
+## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Support
+## 🙋 Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/faceit-visa/issues)
-- 📖 **Documentation**: This README and inline code documentation
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/faceit-visa/discussions)
+- 📖 **Documentation**: This README
+- 🐛 **Issues**: [GitHub Issues](https://github.com/shadiflo/faceit-visa/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/shadiflo/faceit-visa/discussions)
 
 ---
 

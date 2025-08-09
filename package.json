@@ -4,11 +4,15 @@
   "description": "A lightweight OAuth2 authentication library for FACEIT integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "faceit-visa": "dist/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "jest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postinstall": "node scripts/postinstall.js"
   },
   "keywords": [
     "faceit",
@@ -39,6 +43,8 @@
   },
   "files": [
     "dist",
+    "templates",
+    "scripts",
     "README.md",
     "faceit.png"
   ],
