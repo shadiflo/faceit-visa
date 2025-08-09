@@ -1,4 +1,6 @@
-# FaceitVisa 🎮
+# FaceitVisa 
+
+<img src="faceit.png" alt="FACEIT" width="64" height="64">
 
 A lightweight, TypeScript-first OAuth2 authentication library for FACEIT integration. Inspired by the simplicity of getting a visa - just the essentials you need to authenticate with FACEIT.
 
