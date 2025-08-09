@@ -35,8 +35,12 @@ export class FaceitVisaMiddleware {
 
     // Login route
     router.get(this.options.loginPath!, (req: Request, res: Response) => {
-      const sessionId = req.sessionID || 'default';
-      const { url } = this.visa.getAuthUrl(sessionId);
+      const { url, codeVerifier } = this.visa.getAuthUrl();
+      
+      // Store codeVerifier in session (like your original code)
+      if (req.session) {
+        (req.session as any).codeVerifier = codeVerifier;
+      }
       
       return res.redirect(url);
     });
@@ -49,8 +53,8 @@ export class FaceitVisaMiddleware {
         return this.handleError(req, res, 'no_code');
       }
 
-      const sessionId = req.sessionID || 'default';
-      const codeVerifier = this.visa.getCodeVerifier(sessionId);
+      // Get codeVerifier from session (like your original code)
+      const codeVerifier = req.session ? (req.session as any).codeVerifier : null;
 
       if (!codeVerifier) {
         return this.handleError(req, res, 'no_codeverifier');
@@ -69,8 +73,10 @@ export class FaceitVisaMiddleware {
           return this.handleError(req, res, 'user_profile_failed');
         }
 
-        // Clean up code verifier
-        this.visa.clearCodeVerifier(sessionId);
+        // Clean up code verifier from session
+        if (req.session) {
+          delete (req.session as any).codeVerifier;
+        }
 
         // Store user in session
         if (req.session) {

@@ -139,4 +139,7 @@ export class FaceitVisa {
   }
 }
 
+// Re-export middleware
+export { FaceitVisaMiddleware, AuthenticatedRequest, MiddlewareOptions } from './middleware';
+
 export default FaceitVisa;

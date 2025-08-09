@@ -17,6 +17,9 @@ build/
 .env.test.local
 .env.production.local
 
+# Test app (contains credentials and certificates)
+test-app/
+
 # IDE
 .vscode/
 .idea/
