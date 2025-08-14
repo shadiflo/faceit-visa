@@ -1,6 +1,6 @@
 {
-  "name": "faceit-visa",
-  "version": "1.0.2",
+  "name": "@shadiflo/faceit-visa",
+  "version": "1.0.3",
   "description": "A lightweight OAuth2 authentication library for FACEIT integration",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
