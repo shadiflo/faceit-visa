@@ -51,5 +51,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shadiflo/faceit-visa.git"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/shadiflo/faceit-visa/issues"
+  },
+  "homepage": "https://github.com/shadiflo/faceit-visa#readme"
 }

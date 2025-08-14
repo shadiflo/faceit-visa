@@ -1,5 +1,8 @@
 # FaceitVisa
 
+> **⚠️ Beta Software Notice**  
+> This package is currently in testing phase. While it has been tested and is functional, you may encounter bugs or unexpected behavior. Please report any issues to help improve the package.
+
 <img src="faceit.png" alt="FACEIT" width="64" height="64">
 
 **The easiest way to add FACEIT OAuth2 authentication to any web application.**
